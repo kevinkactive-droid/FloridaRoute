@@ -1,0 +1,227 @@
+<Window x:Class="FloridaRouteApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="🌴 Florida Route Calculator"
+        Height="720" Width="1050"
+        MinHeight="600" MinWidth="800"
+        Background="#0f1117"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Rounded button style -->
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"       Value="#3b82f6"/>
+            <Setter Property="Foreground"       Value="White"/>
+            <Setter Property="FontFamily"       Value="Segoe UI"/>
+            <Setter Property="FontSize"         Value="13"/>
+            <Setter Property="FontWeight"       Value="SemiBold"/>
+            <Setter Property="Padding"          Value="20,9"/>
+            <Setter Property="BorderThickness"  Value="0"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#2563eb"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1d4ed8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GhostBtn" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Foreground"      Value="#64748b"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Padding"         Value="8,4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#22263a"/>
+                                <Setter Property="Foreground" Value="#e2e8f0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark text box style -->
+        <Style x:Key="DarkEntry" TargetType="TextBox">
+            <Setter Property="Background"       Value="#22263a"/>
+            <Setter Property="Foreground"       Value="#e2e8f0"/>
+            <Setter Property="CaretBrush"       Value="#e2e8f0"/>
+            <Setter Property="FontFamily"       Value="Segoe UI"/>
+            <Setter Property="FontSize"         Value="13"/>
+            <Setter Property="Padding"          Value="10,7"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="BorderBrush"      Value="#2d3348"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#3b82f6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Dark combo box style -->
+        <Style x:Key="DarkCombo" TargetType="ComboBox">
+            <Setter Property="Background"      Value="#22263a"/>
+            <Setter Property="Foreground"      Value="#e2e8f0"/>
+            <Setter Property="FontFamily"      Value="Segoe UI"/>
+            <Setter Property="FontSize"        Value="11"/>
+            <Setter Property="BorderBrush"     Value="#2d3348"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding"         Value="8,4"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>  <!-- Header -->
+            <RowDefinition Height="2"/>     <!-- Accent line -->
+            <RowDefinition Height="Auto"/>  <!-- Controls -->
+            <RowDefinition Height="Auto"/>  <!-- Info bar -->
+            <RowDefinition Height="*"/>     <!-- Map -->
+            <RowDefinition Height="Auto"/>  <!-- Status bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ── Header ───────────────────────────────────────────────── -->
+        <Border Grid.Row="0" Background="#1a1d27" Padding="16,10">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🌴  Florida Route Calculator"
+                               Foreground="#e2e8f0" FontFamily="Segoe UI"
+                               FontSize="15" FontWeight="Bold"/>
+                    <TextBlock Text="  ·  Florida routes only"
+                               Foreground="#64748b" FontFamily="Segoe UI"
+                               FontSize="10" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock Text="Map style:" Foreground="#64748b"
+                               FontFamily="Segoe UI" FontSize="10"
+                               VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ComboBox x:Name="MapStyleCombo"
+                              Style="{StaticResource DarkCombo}"
+                              Width="150"
+                              SelectionChanged="MapStyleCombo_SelectionChanged"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ── Blue accent divider ──────────────────────────────────── -->
+        <Border Grid.Row="1" Background="#3b82f6"/>
+
+        <!-- ── Controls ─────────────────────────────────────────────── -->
+        <Border Grid.Row="2" Background="#0f1117" Padding="16,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Origin"
+                           Foreground="#64748b" FontFamily="Segoe UI"
+                           FontSize="11" VerticalAlignment="Center"
+                           Margin="0,0,10,0"/>
+                <TextBox Grid.Column="1" x:Name="OriginBox"
+                         Style="{StaticResource DarkEntry}"
+                         Text="Miami, FL"
+                         KeyDown="Entry_KeyDown"/>
+
+                <TextBlock Grid.Column="3" Text="Destination"
+                           Foreground="#64748b" FontFamily="Segoe UI"
+                           FontSize="11" VerticalAlignment="Center"
+                           Margin="0,0,10,0"/>
+                <TextBox Grid.Column="4" x:Name="DestinationBox"
+                         Style="{StaticResource DarkEntry}"
+                         Text="Orlando, FL"
+                         KeyDown="Entry_KeyDown"/>
+
+                <Button Grid.Column="6" Content="Calculate Route"
+                        Style="{StaticResource PrimaryBtn}"
+                        Click="CalculateBtn_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- ── Info bar ──────────────────────────────────────────────── -->
+        <Border Grid.Row="3" Background="#1a1d27" Padding="16,8">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="DistanceLabel"
+                               Text="Distance: —"
+                               Foreground="#e2e8f0" FontFamily="Segoe UI"
+                               FontSize="12" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="DurationLabel"
+                               Text="Duration: —"
+                               Foreground="#e2e8f0" FontFamily="Segoe UI"
+                               FontSize="12" FontWeight="SemiBold"
+                               Margin="28,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="PointsLabel"
+                               Foreground="#64748b" FontFamily="Segoe UI"
+                               FontSize="10" VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ── Map (WebView2 embedding Mapbox GL JS) ─────────────────── -->
+        <Border Grid.Row="4" Margin="10,6,10,0" CornerRadius="8"
+                ClipToBounds="True">
+            <wv2:WebView2 x:Name="MapView"
+                          NavigationCompleted="MapView_NavigationCompleted"/>
+        </Border>
+
+        <!-- ── Status bar ────────────────────────────────────────────── -->
+        <Border Grid.Row="5" Background="#1a1d27" Padding="16,6">
+            <TextBlock x:Name="StatusLabel"
+                       Text="Ready — enter two locations within Florida."
+                       Foreground="#64748b" FontFamily="Segoe UI" FontSize="10"/>
+        </Border>
+    </Grid>
+</Window>

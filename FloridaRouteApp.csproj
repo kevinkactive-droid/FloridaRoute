@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>FloridaRouteApp</AssemblyName>
+    <RootNamespace>FloridaRouteApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WebView2 to embed Mapbox map inside the desktop window -->
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
+    <!-- JSON parsing for API responses -->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>
